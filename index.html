@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        display: grid;
+        overflow: hidden;
+        height: 100vh;
+        place-items: center;
+        background: rgb(0, 0, 0);
+        font-family: Georgia, "Times New Roman", Times, serif;
+      }
+      .clock {
+        height: 300px;
+        aspect-ratio: 1;
+        background: rgb(0, 0, 0);
+        position: relative;
+        display: grid;
+        place-content: center;
+      }
+      .seconds {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 50%;
+      }
+      /*  */
+      .secbar {
+        height: 5px;
+        position: absolute;
+        width: 2px;
+        background-color: rgb(91, 91, 91);
+        transform-origin: top;
+      }
+      .secnum {
+        position: absolute;
+        color: white;
+      }
+      /*  */
+      .min {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+      }
+      .minnum {
+        position: absolute;
+        color: white;
+      }
+      .hour {
+        height: 80px;
+        aspect-ratio: 1;
+        color: white;
+        font-size: 80px;
+        display: grid;
+        place-content: center;
+        transform: translateY(-8px);
+      }
+      .mintag {
+        position: absolute;
+        box-sizing: border-box;
+        height: 60px;
+        width: 100px;
+        background: linear-gradient(90deg, rgb(0, 0, 0), transparent);
+        border: 2px solid white;
+        border-right: none;
+        border-radius: 30px 0 0 30px;
+        top: calc(50% - 30px);
+        right: 0px;
+        color: white;
+        font-size: 30px;
+        padding: 8px;
+      }
+      .ampm {
+        color: rgb(0, 255, 17);
+        position: absolute;
+        left: calc(50% - 10px);
+        top: calc(50% + 35px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="clock">
+      <div class="seconds"></div>
+      <div class="min"></div>
+      <div class="hour">00</div>
+      <div class="mintag">00</div>
+      <div class="ampm">pm</div>
+    </div>
+    <script>
+      let seconds = document.querySelector(".seconds");
+      let min = document.querySelector(".min");
+      // sec
+      for (let i = 0; i < 60; i++) {
+        let secbar = document.createElement("div");
+        secbar.classList.add("secbar");
+        if (i % 5 == 0) {
+          secbar.style.height = `10px`;
+          secbar.style.background = `red`;
+        }
+        secbar.style.left = `${
+          150 * Math.sin(((2 * Math.PI) / 60) * i) + 150
+        }px`;
+        secbar.style.top = `${
+          150 * -Math.cos(((2 * Math.PI) / 60) * i) + 150
+        }px`;
+        secbar.style.rotate = `${6 * i}deg`;
+        seconds.appendChild(secbar);
+      }
+      // sec numbering
+      for (let i = 0; i < 12; i++) {
+        let secbar = document.createElement("div");
+        secbar.innerHTML = i * 5;
+        secbar.classList.add("secnum");
+        secbar.style.left = `${
+          120 * Math.sin(((2 * Math.PI) / 12) * i) + 142
+        }px`;
+        secbar.style.top = `${
+          120 * -Math.cos(((2 * Math.PI) / 12) * i) + 142
+        }px`;
+        seconds.appendChild(secbar);
+      }
+      // min bars
+      for (let i = 0; i < 60; i++) {
+        let secbar = document.createElement("div");
+        secbar.classList.add("secbar");
+        if (i % 5 == 0) {
+          secbar.style.height = `10px`;
+          secbar.style.background = `green`;
+        }
+        secbar.style.left = `${
+          100 * Math.sin(((2 * Math.PI) / 60) * i) + 150
+        }px`;
+        secbar.style.top = `${
+          100 * -Math.cos(((2 * Math.PI) / 60) * i) + 150
+        }px`;
+        secbar.style.rotate = `${6 * i}deg`;
+        min.appendChild(secbar);
+      }
+      // min numbering
+      for (let i = 0; i < 12; i++) {
+        let secbar = document.createElement("div");
+        secbar.innerHTML = i * 5;
+        secbar.classList.add("minnum");
+        secbar.style.left = `${
+          75 * Math.sin(((2 * Math.PI) / 12) * i) + 142
+        }px`;
+        secbar.style.top = `${
+          75 * -Math.cos(((2 * Math.PI) / 12) * i) + 142
+        }px`;
+        min.appendChild(secbar);
+      }
+
+      //
+      // rotate sec
+      let rotatesec = -new Date().getSeconds() * 6;
+      let rotatesecnum = new Date().getSeconds() * 6;
+      let rotatemin = -new Date().getMinutes() * 6;
+      let rotateminnum = new Date().getMinutes() * 6;
+      setInterval(() => {
+        // rotate sec
+        rotatesec -= 0.06;
+        document.querySelector(".seconds").style.rotate =
+          rotatesec + 90 + "deg";
+
+        // rotate sec num
+        rotatesecnum += 0.06;
+        document.querySelectorAll(".secnum").forEach((item) => {
+          item.style.rotate = rotatesecnum - 90 + "deg";
+        });
+
+        // rotate min
+        rotatemin -= 0.06 / 60;
+        document.querySelector(".min").style.rotate = rotatemin + 90 + "deg";
+
+        // rotate min num
+        rotateminnum += 0.06 / 60;
+        document.querySelectorAll(".minnum").forEach((item) => {
+          item.style.rotate = rotateminnum - 90 + "deg";
+        });
+        // special min num
+        let min = new Date().getMinutes();
+        if (min < 10) {
+          document.querySelector(".mintag").innerHTML = "0" + min;
+        } else {
+          document.querySelector(".mintag").innerHTML = min;
+        }
+        // set hour
+        let hour = new Date().getHours();
+        if (hour <= 12) {
+          document.querySelector(".hour").innerHTML = hour;
+          if(hour==12){
+            document.querySelector(".ampm").innerHTML = "pm";
+          }else{
+            document.querySelector(".ampm").innerHTML = "am";
+          }
+        } else {
+          document.querySelector(".hour").innerHTML = hour - 12;
+          document.querySelector(".ampm").innerHTML = "pm";
+        }
+      }, 10);
+      setInterval(()=>{
+        window.location.reload()
+      },1000*60*5)
+    </script>
+  </body>
+</html>
